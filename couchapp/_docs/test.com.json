@@ -1,0 +1,46 @@
+{
+    "_id": "test.com",
+    "type": "zone",
+    "zone": "test.com",
+    "soa": {
+        "nameserver": "dns.test.com",
+        "hostmaster": "hostmaster.test.org"
+    },
+    "ns": [
+        "ns1.xiala.net"
+    ],
+    "rr": [
+        {
+            "name": "www",
+            "type": "a",
+            "data": [
+                "192.168.1.1",
+                "10.0.0.1"
+            ],
+            "ttl": 62
+        },
+        {
+            "name": "@",
+            "type": "mx",
+            "data": "10 mail.test.com",
+            "ttl": 600
+        },
+        {
+            "name": "@",
+            "type": "a",
+            "data": [
+                "127.0.0.2"
+            ]
+        },
+        {
+            "name": "ldap",
+            "type": "cname",
+            "data": "www.test.com"
+        },
+        {
+            "name": "hot",
+            "type": "dname",
+            "data": "temp.aa"
+        }
+    ]
+}
