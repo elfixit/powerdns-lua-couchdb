@@ -83,15 +83,15 @@ function init()
 end
 
 -- helper function debug
-function printtable(table)
-  print('printtable value=',table)
-  for key, value in pairs(table) do
-    print(key, value)
-    if type(value) == type({}) then
-      printtable(value)
-    end
-  end
-end
+--function printtable(table)
+--  print('printtable value=',table)
+--  for key, value in pairs(table) do
+--    print(key, value)
+--    if type(value) == type({}) then
+--      printtable(value)
+--    end
+--  end
+--end
 
 function list(target, domain_id)
     logger(log_debug, "(l_list)", "target:", target, " domain_id:", domain_id )
