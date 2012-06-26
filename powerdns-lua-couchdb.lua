@@ -31,6 +31,45 @@ local configdir     = getarg('configdir')
 local debug         = mustdo('debug')
 debug = true
 
+-- helper functions
+function string:split(sSeparator, nMax, bRegexp)
+    assert(sSeparator ~= '')
+    assert(nMax == nil or nMax >= 1)
+
+    local aRecord = {}
+
+    if self:len() > 0 then
+        local bPlain = not bRegexp
+        nMax = nMax or -1
+
+        local nField=1 nStart=1
+        local nFirst,nLast = self:find(sSeparator, nStart, bPlain)
+        while nFirst and nMax ~= 0 do
+            aRecord[nField] = self:sub(nStart, nFirst-1)
+            nField = nField+1
+            nStart = nLast+1
+            nFirst,nLast = self:find(sSeparator, nStart, bPlain)
+            nMax = nMax-1
+        end
+        aRecord[nField] = self:sub(nStart)
+    end
+
+    return aRecord
+end
+
+-- helper function debug
+--function printtable(table)
+--  print('printtable value=',table)
+--  for key, value in pairs(table) do
+--    print(key, value)
+--    if type(value) == type({}) then
+--      printtable(value)
+--    end
+--  end
+--end
+
+
+-- initials backend..
 function init()
     -- set default values.. why the fuck can't i?
     if database == nil then
@@ -82,17 +121,6 @@ function init()
 
 end
 
--- helper function debug
---function printtable(table)
---  print('printtable value=',table)
---  for key, value in pairs(table) do
---    print(key, value)
---    if type(value) == type({}) then
---      printtable(value)
---    end
---  end
---end
-
 function list(target, domain_id)
     logger(log_debug, "(l_list)", "target:", target, " domain_id:", domain_id )
     return false
@@ -126,6 +154,8 @@ function lookup(qtype, qname, domain_id)
     logger(log_debug, "(l_lookup)", "size:", size)
 end
 
+local contentparts = {}
+
 function get()
     -- returns the result rows content
     logger(log_error, "(l_get) BEGIN")
@@ -134,9 +164,11 @@ function get()
         c = c + 1
         res = rows[c].value
         if not(res.type == 'SOA') then 
-            --for kk,vv in pairs(res) do
-            --    logger(log_debug, "GET: ", kk, type(vv), vv)
-            --end
+            if res.type == 'MX' then
+                contentparts = string.split(res.content, " ")
+                res['priority'] = contentparts[1]
+                res['content'] = contentparts[2]
+            end
             logger(log_debug, "return entry of type: ", res.type)
             return res 
         else

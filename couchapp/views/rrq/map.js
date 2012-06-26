@@ -13,7 +13,7 @@ function isArray(obj) {
 function (doc) {
     if (doc.type == 'zone') {
         var zonettl = doc.default_ttl ? doc.default_ttl : 86400;
-
+        //log(doc)
         // SOA
         var soa = doc.soa;
         var nameserver  = (soa.nameserver)  ? soa.nameserver: 'dns.' + doc.zone;
@@ -24,19 +24,6 @@ function (doc) {
         var expire      = (soa.expire)      ? soa.expire    : 3600000;
         var minimum     = (soa.minimum)     ? soa.minimum   : 172800;
         emit([ doc.zone, 'SOA' ], {
-            type : 'SOA',
-            ttl  : zonettl,
-            content : {
-                nameserver  : nameserver,
-                hostmaster  : hostmaster,
-                serial      : serial,
-                refresh     : refresh,
-                retry       : retry,
-                expire      : expire,
-                minimum     : minimum
-            }
-        });
-        emit([ doc.zone, 'ANY' ], {
             type : 'SOA',
             ttl  : zonettl,
             content : {
@@ -76,32 +63,33 @@ function (doc) {
                 var fqdn = (rr.name) ? rr.name + '.' : '';
                 fqdn += doc.zone;
                 if (isArray(rr.content)) {
-                    rr.content.forEach( function(content) {
-                        emit([ fqdn, rr.type ], {
+                    for (var ic = 0; ic < rr.content.length; ic++) {
+                        var content = rr.content[ic];
+                        emit([ fqdn, rr.type.toUpperCase() ], {
                             name    : fqdn,
                             type    : rr.type.toUpperCase(),
                             content : content,
-                            ttl     : ttl,
+                            ttl     : ttl
                         })
                         emit([ fqdn, 'ANY' ], {
                             name    : fqdn,
                             type    : rr.type.toUpperCase(),
                             content : content,
-                            ttl     : ttl,
+                            ttl     : ttl
                         })
-                    })
+                    }
                 } else {
-                    emit([ fqdn, rr.type ], {
+                    emit([ fqdn, rr.type.toUpperCase() ], {
                         name    : fqdn,
                         type    : rr.type.toUpperCase(),
                         content : rr.content,
-                        ttl     : ttl,
+                        ttl     : ttl
                     });
                     emit([ fqdn, 'ANY' ], {
                         name    : fqdn,
                         type    : rr.type.toUpperCase(),
                         content : rr.content,
-                        ttl     : ttl,
+                        ttl     : ttl
                     });
                 }
             }
@@ -116,7 +104,20 @@ function (doc) {
                     ttl = (ttl) ? ttl : 9845;
 
                     // Cycle through array of IP addresses in A RR
-                    rr.content.forEach( function(addr) {
+                    if (isArray(rr.content)) {
+                        rr.content.forEach( function(addr) {
+                            var ip = addr.split('.');
+                            var rev = ip[3]+'.'+ip[2]+'.'+ip[1]+'.'+ip[0];
+                            var revname = rev + '.in-addr.arpa';
+                            emit( [ revname, 'ptr' ], {
+                                name    : revname,
+                                type    : 'ptr'.toUpperCase(),
+                                content : rr.name + '.' + doc.zone,
+                                ttl     : ttl
+                            });
+                        });
+                    } else {
+                        var addr = rr.content;
                         var ip = addr.split('.');
                         var rev = ip[3]+'.'+ip[2]+'.'+ip[1]+'.'+ip[0];
                         var revname = rev + '.in-addr.arpa';
@@ -126,7 +127,7 @@ function (doc) {
                             content : rr.name + '.' + doc.zone,
                             ttl     : ttl
                         });
-                    });
+                    }
                 }
             });
         }

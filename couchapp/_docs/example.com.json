@@ -2,23 +2,76 @@
     "_id": "example.com",
     "type": "zone",
     "zone": "example.com",
-    "default_ttl": 1800,
+    "default_ttl": 60,
     "soa": {
         "nameserver": "dns.example.org",
         "hostmaster": "hostmaster.example.org"
     },
     "ns": [
-        "ns1.foo.",
-        "ns2.foo.",
-        "ns3.foo."
+        "ns1.example.com",
+        "ns2.example.com"
     ],
     "rr": [
         {
-            "name": "www",
-            "type": "A",
+            "type": "mx",
+            "content": "10 mail.example.net"
+        },
+        {
+            "type": "mx",
+            "content": [
+                "15 mail.example.com",
+                "16 mail2.example.com"
+            ]
+        },
+        {
+            "type": "a",
+            "content": "127.0.0.2"
+        },
+        {
+            "type": "txt",
+            "content": [
+                "Relax",
+                "powered by",
+                "CouchDB and PowerDNS Lua"
+            ]
+        },
+        {
+            "name": "mail",
+            "type": "a",
             "content": [
                 "192.168.1.1",
                 "10.0.0.1"
+            ]
+        },
+        {
+            "name": "mail2",
+            "type": "a",
+            "content": [
+                "192.168.1.1",
+                "10.0.0.1"
+            ]
+        },
+        {
+            "name": "www",
+            "type": "a",
+            "content": [
+                "192.168.1.1",
+                "10.0.0.1"
+            ]
+        },        {
+            "name": "ns1",
+            "type": "a",
+            "content": [
+                "192.168.1.1",
+                "10.0.0.1"
+            ]
+        },
+        {
+            "name": "ns2",
+            "type": "a",
+            "content": [
+                "192.168.2.1",
+                "10.0.2.1"
             ]
         },
         {
@@ -27,36 +80,6 @@
             "content": [
                 "text record",
                 "this is a"
-            ]
-        },
-        {
-            "name": "@",
-            "type": "mx",
-            "content": "10 mail.example.net"
-        },
-        {
-            "name": "@",
-            "type": "mx",
-            "content": [
-                "15 mail",
-                "16 mail2",
-                "17 mail3.foo"
-            ]
-        },
-        {
-            "name": "@",
-            "type": "a",
-            "content": [
-                "127.0.0.2"
-            ]
-        },
-        {
-            "name": "@",
-            "type": "txt",
-            "content": [
-                "Relax",
-                "CouchDB and Bind SDB",
-                "powered by"
             ]
         },
         {

@@ -2,45 +2,62 @@
     "_id": "test.com",
     "type": "zone",
     "zone": "test.com",
+    "default_ttl": 60,
     "soa": {
         "nameserver": "dns.test.com",
         "hostmaster": "hostmaster.test.org"
     },
     "ns": [
-        "ns1.xiala.net"
+        "ns1.test.com",
+        "ns2.test.com"
     ],
     "rr": [
         {
+            "type": "mx",
+            "content": [
+                "10 mail.test.com",
+                "20 mailbackup.test.com"
+            ]
+        },
+        {
+            "type": "a",
+            "content": "127.0.0.2"
+        },
+        {
+            "name": "mail",
+            "type": "a",
+            "content": "10.0.0.1"
+        },
+        {
+            "name": "mailbackup",
+            "type": "a",
+            "content": "10.0.0.1"
+        },
+        {
             "name": "www",
             "type": "a",
-            "data": [
-                "192.168.1.1",
-                "10.0.0.1"
-            ],
-            "ttl": 62
+            "content": "10.0.0.1"
         },
         {
-            "name": "@",
-            "type": "mx",
-            "data": "10 mail.test.com",
-            "ttl": 600
-        },
-        {
-            "name": "@",
+            "name": "ns1",
             "type": "a",
-            "data": [
-                "127.0.0.2"
+            "content": [
+                "10.0.1.1",
+                "10.0.0.1"
+            ]
+        },
+        {
+            "name": "ns2",
+            "type": "a",
+            "content": [
+                "10.0.0.2",
+                "10.0.2.1"
             ]
         },
         {
             "name": "ldap",
             "type": "cname",
-            "data": "www.test.com"
-        },
-        {
-            "name": "hot",
-            "type": "dname",
-            "data": "temp.aa"
+            "content": "www.test.com"
         }
     ]
 }
